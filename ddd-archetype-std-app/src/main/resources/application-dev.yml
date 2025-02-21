@@ -18,30 +18,65 @@ logging:
     root: debug
   config: classpath:logback-spring.xml
 
+# dubbo配置
+dubbo:
+  application:
+    name: xxx
+    logger: slf4j
+    version: 1.0.0
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://127.0.0.1:8848
+  scan:
+    base-packages: com.xjhwang.api
+
 # mybatis配置
 mybatis:
   config-location: classpath:/mybatis/config/mybatis-config.xml
   mapper-locations: classpath:/mybatis/mapper/*.xml
 
-# spring-rabbitmq
 spring:
+  # database配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username:
     password:
     url: jdbc:mysql://127.0.0.1:3306/xxx?useUnicode=true&&characterEncoding=UTF8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
-  rabbitmq:
-    addresses:
-    port:
-    username:
-    password:
-    virtual-host:
-    listener:
-      simple:
-        # 每次投递1个消息，投递完成后再投递下1个消息
-        prefetch: 1
-    topic:
-      xxx: xxx
+  # nacos配置
+  cloud:
+    nacos:
+      config:
+        import-check:
+          enabled: false
+        server-addr: 127.0.0.1:8848
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+# rocketmq配置
+rocketmq:
+  name-server: 127.0.0.1:9876
+  consumer:
+    group: xxx
+    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
+    pull-batch-size: 10
+  producer:
+    # 发送同一类消息的设置为同一个group，保证唯一
+    group: xxx
+    # 发送消息超时时间，默认3000
+    send-message-timeout: 10000
+    # 发送消息失败重试次数，默认2
+    retry-times-when-send-failed: 2
+    # 异步消息重试次数，默认2
+    retry-times-when-send-async-failed: 2
+    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
+    max-message-size: 4096
+    # 压缩消息阈值，默认4k(1024 * 4)
+    compress-message-body-threshold: 4096
+    # 是否在内部发送失败时重试另一个broker，默认false
+    retry-next-server: false
 
 # application自定义配置
 application:

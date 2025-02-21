@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xjhwang.types.event.BaseEvent;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class EventPublisher {
     
     @Resource
-    private RabbitTemplate rabbitTemplate;
+    private RocketMQTemplate rocketMQTemplate;
     
     /**
      * 发布消息到MQ
@@ -29,7 +29,7 @@ public class EventPublisher {
         
         try {
             String messageJson = JSON.toJSONString(eventMessage);
-            rabbitTemplate.convertAndSend(topic, messageJson);
+            rocketMQTemplate.convertAndSend(topic, messageJson);
             log.info("发送MQ消息 topic:{} message:{}", topic, messageJson);
         } catch (Exception e) {
             log.error("发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
